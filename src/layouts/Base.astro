@@ -1,0 +1,32 @@
+---
+import '../styles/global.css';
+import { sitePath } from '../lib/site';
+interface Props { title: string; sample?: boolean; }
+const { title, sample = false } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · IGCSE Computer Science 0478</title>
+    <meta name="description" content="Chapter-by-chapter knowledge summaries for IGCSE Computer Science 0478, with definitions, explanations, diagrams and worked examples." />
+    {sample && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" type="image/svg+xml" href={sitePath('favicon.svg')} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header screen-only">
+      <a href={sitePath()} class="brand" aria-label="Computer Science 0478 course index">
+        <span class="brand-mark" aria-hidden="true">0478<span></span></span>
+        <span class="brand-name">Computer Science<span>IGCSE LEARNING CHECKLISTS</span></span>
+      </a>
+      <span class="syllabus-tag">SYLLABUS <strong>2026–2028</strong></span>
+    </header>
+    <slot />
+    <footer class="site-footer screen-only">
+      <span>IGCSE Computer Science <strong>0478</strong></span>
+      <span>Independent teaching resource · 2026–2028</span>
+    </footer>
+  </body>
+</html>

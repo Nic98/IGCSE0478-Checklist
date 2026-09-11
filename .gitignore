@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.preview-dist/
+.astro/
+.generated/
+.venv/
+output/
+tmp/
+drafts/
+.DS_Store
+*.zip
+*.pyc
+__pycache__/
+.env
+.env.*
+!.env.example

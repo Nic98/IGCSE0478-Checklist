@@ -1,0 +1,15 @@
+---
+import type { KnowledgeBlock } from '../lib/site';
+interface Props { block: KnowledgeBlock; }
+const { block } = Astro.props;
+---
+<div class:list={['knowledge-block', `block-${block.type}`]} id={`block-${block.id}`}>
+  {block.type === 'definition' && <div class="definition-content"><span class="block-label">DEFINITION</span><h3>{block.term}</h3><p>{block.text}</p></div>}
+  {block.type === 'bullets' && <><h3>{block.title}</h3><ul class="knowledge-list">{block.items.map((item) => <li>{item}</li>)}</ul></>}
+  {block.type === 'steps' && <><h3>{block.title}</h3><ol class="knowledge-steps">{block.items.map((item) => <li>{item}</li>)}</ol></>}
+  {block.type === 'comparison' && <div class="comparison-scroll" tabindex="0" role="region" aria-label={block.title}><table class:list={['knowledge-table', { 'numeric-table': block.columns.every((column) => /^\d+$/.test(column)) }]}><caption>{block.title}</caption><thead><tr>{block.columns.map((column) => <th scope="col">{column}</th>)}</tr></thead><tbody>{block.rows.map((row) => <tr>{row.map((cell) => <td>{cell}</td>)}</tr>)}</tbody></table></div>}
+  {block.type === 'example' && <div class="worked-example"><div class="example-heading"><span class="block-label">WORKED EXAMPLE</span><h3>{block.title}</h3></div><p class="example-problem">{block.problem}</p><ol class="knowledge-steps">{block.steps.map((step) => <li>{step}</li>)}</ol><p class="example-result"><span>Result</span>{block.result}</p></div>}
+  {block.type === 'equivalence' && <figure class="equivalence"><figcaption>{block.title}</figcaption><div class="equivalent-values">{block.values.map((entry, index) => <>{index > 0 && <span class="equal-sign" aria-label="equals">=</span>}<div class="equivalent-value"><span>{entry.label}</span><strong>{entry.value}</strong></div></>)}</div></figure>}
+  {block.type === 'callout' && <aside class="knowledge-callout"><h3>{block.title}</h3><p>{block.text}</p></aside>}
+  {block.hint && <p class="knowledge-hint" lang="zh-Hans">{block.hint}</p>}
+</div>

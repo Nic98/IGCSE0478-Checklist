@@ -1,0 +1,40 @@
+[
+  {"id":"1","title":"Data representation","paper":1,"units":[
+    {"id":"1.1","label":"1.1","title":"Number systems"},
+    {"id":"1.2","label":"1.2","title":"Text, sound and images"},
+    {"id":"1.3","label":"1.3","title":"Data storage and file compression"}
+  ]},
+  {"id":"2","title":"Data transmission","paper":1,"units":[
+    {"id":"2.1","label":"2.1","title":"Types and methods of data transmission"},
+    {"id":"2.2","label":"2.2","title":"Methods of error detection"},
+    {"id":"2.3","label":"2.3","title":"Symmetric and asymmetric encryption"}
+  ]},
+  {"id":"3","title":"Hardware","paper":1,"units":[
+    {"id":"3.1-1","label":"3.1","part":1,"title":"Computer architecture"},
+    {"id":"3.1-2","label":"3.1","part":2,"title":"Computer architecture"},
+    {"id":"3.2-1","label":"3.2","part":1,"title":"Input and output devices"},
+    {"id":"3.2-2","label":"3.2","part":2,"title":"Input and output devices"},
+    {"id":"3.3-1","label":"3.3","part":1,"title":"Data storage","detail":"Primary storage"},
+    {"id":"3.3-2","label":"3.3","part":2,"title":"Data storage","detail":"Secondary storage"},
+    {"id":"3.3-3","label":"3.3","part":3,"title":"Data storage","detail":"Virtual memory and cloud storage"},
+    {"id":"3.4","label":"3.4","title":"Network hardware"}
+  ]},
+  {"id":"4","title":"Software","paper":1,"units":[
+    {"id":"4.1","label":"4.1","title":"Types of software and interrupts"},
+    {"id":"4.2","label":"4.2","title":"Types of programming language, translators and IDEs"}
+  ]},
+  {"id":"5","title":"The internet and its uses","paper":1,"units":[
+    {"id":"5.1","label":"5.1","title":"The internet and the World Wide Web"},
+    {"id":"5.2","label":"5.2","title":"Digital currency"},
+    {"id":"5.3","label":"5.3","title":"Cyber security"}
+  ]},
+  {"id":"6","title":"Automated and emerging technologies","paper":1,"units":[
+    {"id":"6.1","label":"6.1","title":"Automated systems"},
+    {"id":"6.2","label":"6.2","title":"Robotics"},
+    {"id":"6.3","label":"6.3","title":"Artificial intelligence"}
+  ]},
+  {"id":"7","title":"Algorithm design and problem-solving","paper":2,"units":[]},
+  {"id":"8","title":"Programming","paper":2,"units":[]},
+  {"id":"9","title":"Databases","paper":2,"units":[]},
+  {"id":"10","title":"Boolean logic","paper":2,"units":[]}
+]

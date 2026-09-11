@@ -1,0 +1,2 @@
+# Runtime dependency for deterministic A4 checklist exports.
+reportlab==4.4.9
