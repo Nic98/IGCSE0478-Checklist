@@ -1,9 +1,9 @@
 {
   "id": "layout-preview",
   "title": "Number systems",
-  "subtitle": "Knowledge summary · layout preview",
+  "subtitle": "Mark-scheme-style revision · layout preview",
   "label": "SAMPLE",
-  "version": "0.2",
+  "version": "0.3",
   "syllabus": "2026–2028",
   "sample": true,
   "sections": [
@@ -15,16 +15,16 @@
           "id": "binary-definition",
           "type": "definition",
           "term": "Binary",
-          "text": "A base-2 number system using the digits 0 and 1. Each position has a value that is a power of two.",
-          "hint": "二进制只有 0 和 1；每一位的位权都是 2 的整数次幂。"
+          "text": "A base-2 number system using the digits 0 and 1.",
+          "hint": "binary：二进制"
         },
         {
           "id": "binary-hardware",
-          "type": "bullets",
-          "title": "Why computers use binary",
+          "type": "answer-points",
+          "title": "Explain why computers use binary.",
           "items": [
-            "Digital circuits can reliably distinguish between two states, such as high and low voltage.",
-            "These states can be represented by the binary digits 1 and 0."
+            "Computers contain logic gates made from transistors that act as switches.",
+            "These switches have two states, on and off, represented by the binary digits 1 and 0."
           ]
         },
         {
@@ -60,10 +60,13 @@
         },
         {
           "id": "hex-purpose",
-          "type": "callout",
-          "title": "Why hexadecimal?",
-          "text": "One hexadecimal digit represents four binary bits. Hexadecimal makes a long binary value shorter to write and easier for a person to read and check.",
-          "hint": "一个十六进制数字对应四个二进制位。"
+          "type": "answer-points",
+          "title": "Why prefer hexadecimal?",
+          "hint": "4 bits ↔ 1 hex digit",
+          "items": [
+            "One hexadecimal digit represents four binary bits.",
+            "Fewer digits make values easier to read, check and copy."
+          ]
         }
       ]
     },
@@ -97,27 +100,27 @@
               "1"
             ]
           ],
-          "hint": "上排为位权，下排为二进制数字。只把数字为 1 的各列位权相加。"
+          "hint": "只加数字为 1 的位权"
         },
         {
           "id": "binary-worked-example",
           "type": "example",
-          "title": "Binary to denary",
-          "problem": "Convert 0010 1101 (binary) to denary.",
+          "title": "Convert binary to denary.",
+          "problem": "0010 1101₂ → denary.",
           "steps": [
-            "Select the place values whose digits are 1: 32, 8, 4 and 1.",
-            "Add the selected values: 32 + 8 + 4 + 1 = 45."
+            "Select the weights: 32, 8, 4, 1.",
+            "32 + 8 + 4 + 1 = 45."
           ],
-          "result": "0010 1101 (binary) = 45 (denary)."
+          "result": "45₁₀"
         },
         {
           "id": "hex-method",
           "type": "steps",
-          "title": "Binary to hexadecimal",
+          "title": "Convert binary to hexadecimal.",
           "items": [
-            "Split the 8-bit value into two groups of four: 0010 | 1101.",
-            "Convert each group: 0010 is 2; 1101 is D.",
-            "Keep the group order to obtain 2D."
+            "Group from the right: 0010 | 1101.",
+            "Convert each group: 0010 → 2; 1101 → D.",
+            "Answer: 2D₁₆."
           ]
         },
         {
@@ -149,27 +152,29 @@
           "id": "overflow-definition",
           "type": "definition",
           "term": "Overflow",
-          "text": "Overflow occurs when the result of a calculation is outside the range that can be represented with the available bits. An unsigned 8-bit integer has a range of 0 to 255.",
-          "hint": "这里讨论的是无符号 8 位整数，最大值为 255。"
+          "text": "The result exceeds the range that the available bits can represent.",
+          "hint": "overflow：溢出"
         },
         {
           "id": "overflow-worked-example",
           "type": "example",
-          "title": "Adding 200 and 100",
-          "problem": "The correct denary sum is 200 + 100 = 300.",
+          "title": "Add two 8-bit binary values.",
+          "problem": "11001000₂ + 01100100₂",
           "steps": [
-            "200 is 1100 1000 in binary; 100 is 0110 0100.",
-            "The binary sum is 1 0010 1100, which requires nine bits.",
-            "If only the lowest eight bits are retained, the stored value is 0010 1100, or 44 in denary."
+            "The binary sum is 1 0010 1100, requiring 9 bits.",
+            "Stored low 8 bits: 00101100₂ = 44."
           ],
-          "result": "300 cannot be represented as an unsigned 8-bit integer: an overflow occurs."
+          "result": "300₁₀: overflow in 8 bits."
         },
         {
           "id": "overflow-explanation",
-          "type": "callout",
-          "title": "Exam explanation",
-          "text": "The sum exceeds 255, the largest unsigned value that eight bits can represent. A ninth bit is required to store the correct result.",
-          "hint": "解释时指出：正确结果、可表示范围，以及为什么现有位数不足。"
+          "type": "answer-points",
+          "title": "Explain why overflow occurs.",
+          "hint": "指出结果、范围与容量限制",
+          "items": [
+            "The sum is 300; the maximum unsigned 8-bit value is 255.",
+            "The correct result needs 9 bits, exceeding the register’s capacity."
+          ]
         }
       ]
     }

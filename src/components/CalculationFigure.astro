@@ -1,0 +1,48 @@
+---
+import type { KnowledgeBlock } from '../lib/site';
+import { divisionRows, binaryAddition, logicalShift } from '../../lib/calculations.mjs';
+
+type CalculationBlock = Extract<KnowledgeBlock, { type: 'division' | 'bit-grid' | 'binary-addition' | 'logical-shift' }>;
+interface Props { block: CalculationBlock; }
+const { block } = Astro.props;
+const division = block.type === 'division' ? divisionRows(block.value, block.base) : [];
+const quotientResult = division.map((row) => row.remainder.toString(16).toUpperCase()).reverse().join('');
+const addition = block.type === 'binary-addition' ? binaryAddition(block.a, block.b, block.width) : null;
+const shift = block.type === 'logical-shift' ? logicalShift(block.value, block.direction, block.places, block.width) : null;
+const octets = block.type === 'bit-grid' ? Array.from({ length: block.width / 8 }, (_, index) => index * 8) : [];
+---
+<figure class:list={['calculation-figure', `calculation-${block.type}`]} aria-labelledby={`figure-${block.id}`}>
+  <figcaption id={`figure-${block.id}`}><h3>{block.title}</h3></figcaption>
+  {block.type === 'division' && <>
+    <table class="division-table"><thead><tr><th scope="col">Dividend ÷ {block.base}</th><th scope="col">Quotient</th><th scope="col">Remainder</th></tr></thead><tbody>{division.map((row) => <tr><td>{row.dividend} ÷ {block.base}</td><td>{row.quotient}</td><td><strong>{row.remainder.toString(16).toUpperCase()}</strong>{row.remainder > 9 && <span class="remainder-denary"> ({row.remainder})</span>}</td></tr>)}</tbody></table>
+    <p class="reading-direction"><span aria-hidden="true">↑</span>Read the remainders from bottom to top.</p>
+    <p class="calculation-result">{block.value}<sub>10</sub> = <strong>{quotientResult}<sub>{block.base}</sub></strong></p>
+  </>}
+  {block.type === 'bit-grid' && <>
+    <div class="octet-groups">{octets.map((start) => <table class="bit-grid-table">
+      {block.width === 16 && <caption>Bits {block.width - start - 1}–{block.width - start - 8}<span>{start === 0 ? 'Most significant octet' : 'Least significant octet'}</span></caption>}
+      {block.weights && <thead><tr><th scope="row">Weight</th>{block.weights.slice(start, start + 8).map((weight) => <th scope="col">{Number.isInteger(Math.log2(Math.abs(weight))) ? <><span class="decimal-weight">{weight}</span><span class="power-weight">{weight < 0 && '−'}2<sup>{Math.log2(Math.abs(weight))}</sup></span></> : weight}</th>)}</tr></thead>}
+      <tbody>{block.rows.map((row) => <tr><th scope="row">{row.label}</th>{row.bits.slice(start, start + 8).split('').map((bit: string) => <td>{bit}</td>)}</tr>)}</tbody>
+    </table>)}</div>
+    {block.note && <p class="calculation-note">{block.note}</p>}
+  </>}
+  {block.type === 'binary-addition' && addition && <>
+    <table class="binary-addition-table"><thead><tr><th scope="col">Column</th><th scope="col" class="outside-width">9th</th>{[7, 6, 5, 4, 3, 2, 1, 0].map((position) => <th scope="col">2<sup>{position}</sup></th>)}</tr></thead><tbody>
+      <tr><th scope="row">{block.a}</th><td class="outside-width"></td>{addition.aBits.split('').map((bit: string) => <td>{bit}</td>)}</tr>
+      <tr><th scope="row">+ {block.b}</th><td class="outside-width"></td>{addition.bBits.split('').map((bit: string) => <td>{bit}</td>)}</tr>
+      <tr class="carry-row"><th scope="row">Carry in</th>{addition.carries.split('').map((carry, index) => <td class:list={{ 'outside-width': index === 0 }}>{carry.trim() || '\u00a0'}</td>)}</tr>
+      <tr class="addition-total"><th scope="row">Sum ({addition.result})</th>{addition.sumBits.split('').map((bit: string, index: number) => <td class:list={{ 'outside-width': index === 0 }}>{bit}</td>)}</tr>
+    </tbody></table>
+    <p class="calculation-explanation">{block.explanation}</p>
+  </>}
+  {block.type === 'logical-shift' && shift && <>
+    <div class="shift-diagram">
+      <div class="shift-row"><span class="bit-row-label">Before</span><div class="bit-strip">{shift.before.split('').map((bit: string, index: number) => <span class:list={['bit-cell', { 'discarded-bit': block.direction === 'left' ? index < block.places : index >= block.width - block.places }]}>{bit}{(block.direction === 'left' ? index < block.places : index >= block.width - block.places) && <sup aria-label="discarded">×</sup>}</span>)}</div></div>
+      <div class="shift-direction" aria-label={`Move all bits ${block.places} places ${block.direction}`}><span>{block.direction === 'left' ? '←' : '→'}</span>Move {block.places} {block.direction}</div>
+      <div class="shift-row"><span class="bit-row-label">After</span><div class="bit-strip">{shift.after.split('').map((bit: string, index: number) => <span class:list={['bit-cell', { 'inserted-bit': shift.insertedIndices.includes(index) }]}>{bit}{shift.insertedIndices.includes(index) && <sup aria-label="inserted zero">+</sup>}</span>)}</div></div>
+    </div>
+    <p class="shift-key"><span><b>×</b> Discarded: {shift.lost}</span><span><b>+</b> Inserted: {block.places} {block.places === 1 ? 'zero' : 'zeros'}</span></p>
+    <p class="calculation-result"><strong>{shift.after}<sub>2</sub> = {shift.result}<sub>10</sub></strong></p>
+    <p class="calculation-explanation">{block.explanation}</p>
+  </>}
+</figure>

@@ -1,6 +1,6 @@
 # Bundled open fonts
 
-These fonts may be redistributed with this project and embedded in PDFs under the SIL Open Font License 1.1. Keep the accompanying license files with copies of the font software.
+These fonts may be redistributed with this project and embedded in PDFs and teacher Word documents under the SIL Open Font License 1.1. Keep the accompanying license files with copies of the font software. Local Word exports embed the complete licensed fonts using the OOXML font-embedding format; embedded font metadata is preserved.
 
 - **Source Serif 4**: Adobe; the regular and semibold TTF files are unmodified official release files. See `OFL-SourceSerif4.md`.
 - **Source Sans 3**: Adobe; the regular and semibold TTF files are unmodified official release files. See `OFL-SourceSans3.md`.

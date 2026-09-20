@@ -41,6 +41,45 @@ test('knowledge tables and worked examples fail validation when incomplete', () 
   assert.throws(() => validateChecklist(second, second.id, true), /problem, steps and result/);
 });
 
+test('answer-point prompts require non-empty text entries', () => {
+  const sample = loadSample();
+  const answer = sample.sections[0].blocks.find((block) => block.type === 'answer-points');
+  assert.ok(answer);
+  assert.doesNotThrow(() => validateChecklist(sample, sample.id, true));
+  answer.items = ['A complete answer point.', ''];
+  assert.throws(() => validateChecklist(sample, sample.id, true), /non-empty text/);
+  answer.items = [];
+  assert.throws(() => validateChecklist(sample, sample.id, true), /non-empty text/);
+});
+
+test('calculation inputs and explicit PDF page groups are checked before rendering', () => {
+  const fixture = () => {
+    const data = loadSample();
+    data.sections = [{id:'calculation-fixture',title:'Calculation fixture',blocks:[
+      {id:'divide',type:'division',title:'Division',value:173,base:2,printPage:1},
+      {id:'bits',type:'bit-grid',title:'Bits',width:8,rows:[{label:'Value',bits:'00101101'}],printPage:1},
+      {id:'add',type:'binary-addition',title:'Addition',a:45,b:39,width:8,explanation:'Carry to the next column.',printPage:2},
+      {id:'shift',type:'logical-shift',title:'Shift',value:13,direction:'right',places:2,width:8,explanation:'Discard the two low bits.',printPage:2},
+    ]}];
+    data.pdfPageTitles = ['First page', 'Second page'];
+    return data;
+  };
+  assert.doesNotThrow(() => validateChecklist(fixture(), 'layout-preview', true));
+  for (const mutate of [
+    (d) => d.sections[0].blocks[0].value = 65536,
+    (d) => d.sections[0].blocks[1].rows[0].bits = '101',
+    (d) => d.sections[0].blocks[1].weights = [1,2],
+    (d) => d.sections[0].blocks[2].a = 256,
+    (d) => d.sections[0].blocks[3].places = 9,
+    (d) => d.sections[0].blocks[0].printPage = 2,
+    (d) => d.sections[0].blocks[3].printPage = 1,
+    (d) => d.pdfPageTitles.push('Empty page'),
+  ]) {
+    const invalid = fixture(); mutate(invalid);
+    assert.throws(() => validateChecklist(invalid, 'layout-preview', true));
+  }
+});
+
 function reviewFixture(t) {
   const directory = mkdtempSync(path.join(tmpdir(), 'checklist-local-review-'));
   t.after(() => rmSync(directory, { recursive: true, force: true }));

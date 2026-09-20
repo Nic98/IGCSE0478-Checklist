@@ -25,6 +25,9 @@ test('knowledge content is primary and self-assessment is collapsed by default',
   await expect(page.locator('.knowledge-content')).toContainText('A base-2 number system using the digits 0 and 1');
   await expect(page.locator('.worked-example')).toHaveCount(2);
   await expect(page.locator('.knowledge-table')).toHaveCount(2);
+  await expect(page.locator('.answer-points')).toHaveCount(3);
+  await expect(page.locator('.answer-points').first()).toContainText('Explain why computers use binary.');
+  await expect(page.locator('.answer-points').first().getByRole('listitem')).toHaveCount(2);
   await expect(page.locator('#optional-assessment')).toHaveJSProperty('open', false);
   await expect(page.locator('input[data-progress-item]').first()).toBeHidden();
   await expect(page.locator('.knowledge-content')).not.toContainText('I can');

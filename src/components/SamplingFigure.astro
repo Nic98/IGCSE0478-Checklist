@@ -1,0 +1,47 @@
+---
+import type { KnowledgeBlock } from '../lib/site';
+import { samplingPanels } from '../../lib/sampling.mjs';
+
+interface Props { block: Extract<KnowledgeBlock, { type: 'sampling-diagram' }>; }
+const { block } = Astro.props;
+const panels = samplingPanels(block);
+const plot = { left: 38, right: 264, top: 28, bottom: 174 };
+const x = (time: number) => plot.left + time / block.duration * (plot.right - plot.left);
+const y = (amplitude: number) => plot.bottom - amplitude * (plot.bottom - plot.top);
+const waveform = block.waveform.map((amplitude, index) => `${x(index / (block.waveform.length - 1) * block.duration)},${y(amplitude)}`).join(' ');
+const axisNumber = (value: number) => Number(value.toFixed(3)).toString();
+const timeTicks = [0, block.duration / 2, block.duration];
+---
+<figure class="sampling-figure" aria-labelledby={`figure-${block.id}`}>
+  <figcaption id={`figure-${block.id}`}><h3>{block.title}</h3></figcaption>
+  <div class="sampling-panels">
+    {panels.map((panel, panelIndex) => <figure class="sampling-panel">
+      <figcaption><strong>{panel.label}</strong><span>{panel.sampleRate} Hz · {panel.resolution} bits per sample</span></figcaption>
+      <svg viewBox="0 0 280 224" role="img" aria-labelledby={`sampling-${block.id}-${panelIndex}-title sampling-${block.id}-${panelIndex}-description`}>
+        <title id={`sampling-${block.id}-${panelIndex}-title`}>{panel.label}: {panel.sampleRate} Hz, {panel.resolution} bits per sample</title>
+        <desc id={`sampling-${block.id}-${panelIndex}-description`}>The same waveform over {block.duration} seconds, sampled {panel.samples.length} times, with {panel.levels.length} possible amplitude levels. Circles show stored sample values. Samples are taken from time zero, excluding the final endpoint.</desc>
+        <text x={plot.left} y="14" class="sampling-axis-label">Amplitude</text>
+        {panel.levels.map((level) => <line class="sampling-level" x1={plot.left} y1={y(level)} x2={plot.right} y2={y(level)} />)}
+        {panel.samples.map((sample) => <line class="sampling-guide" x1={x(sample.time)} y1={plot.bottom} x2={x(sample.time)} y2={y(Math.max(sample.amplitude, sample.stored))} />)}
+        <line class="sampling-axis" x1={plot.left} y1={plot.top} x2={plot.left} y2={plot.bottom} />
+        <line class="sampling-axis" x1={plot.left} y1={plot.bottom} x2={plot.right} y2={plot.bottom} />
+        <polyline class="sampling-waveform" points={waveform} />
+        {panel.samples.map((sample) => <g>
+          <line class="sampling-error" x1={x(sample.time)} y1={y(sample.amplitude)} x2={x(sample.time)} y2={y(sample.stored)} />
+          <circle class="sampling-stored" cx={x(sample.time)} cy={y(sample.stored)} r="3.5" />
+        </g>)}
+        {[0, 1].map((amplitude) => <text class="sampling-tick-label" x={plot.left - 9} y={y(amplitude) + 4} text-anchor="end">{amplitude}</text>)}
+        {timeTicks.map((time) => <g>
+          <line class="sampling-axis" x1={x(time)} y1={plot.bottom} x2={x(time)} y2={plot.bottom + 4} />
+          <text class="sampling-tick-label" x={x(time)} y={plot.bottom + 18} text-anchor="middle">{axisNumber(time)}</text>
+        </g>)}
+        <text class="sampling-axis-label" x={(plot.left + plot.right) / 2} y="215" text-anchor="middle">Time (s)</text>
+      </svg>
+      <p class="sampling-counts">{panel.samples.length} samples · {panel.levels.length} amplitude levels</p>
+    </figure>)}
+  </div>
+  <div class="sampling-legend" aria-label="Diagram key">
+    <span><i class="sampling-key-waveform" aria-hidden="true"></i>Original waveform</span>
+    <span><i class="sampling-key-stored" aria-hidden="true"></i>Stored sample value</span>
+  </div>
+</figure>

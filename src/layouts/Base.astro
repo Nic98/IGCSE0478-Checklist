@@ -3,14 +3,25 @@ import '../styles/global.css';
 import { sitePath } from '../lib/site';
 interface Props { title: string; sample?: boolean; }
 const { title, sample = false } = Astro.props;
+// Resolve public fonts against the project path in development and production.
+const fontFaces = [
+  ['Source Sans', 'SourceSans3-Regular', '400'],
+  ['Source Sans', 'SourceSans3-Semibold', '600 800'],
+  ['Source Serif', 'SourceSerif4-Regular', '400'],
+  ['Source Serif', 'SourceSerif4-Semibold', '600 800'],
+  ['Noto Sans SC', 'NotoSansSC-Regular', '400 700'],
+].map(([family, file, weight]) =>
+  `@font-face{font-family:"${family}";src:url("${sitePath(`fonts/${file}.woff2`)}") format("woff2");font-weight:${weight};font-display:swap}`
+).join('\n');
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style is:inline set:html={fontFaces} />
     <title>{title} · IGCSE Computer Science 0478</title>
-    <meta name="description" content="Chapter-by-chapter knowledge summaries for IGCSE Computer Science 0478, with definitions, explanations, diagrams and worked examples." />
+    <meta name="description" content="Chapter-by-chapter exam revision for IGCSE Computer Science 0478, with concise answer points and essential calculations." />
     {sample && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href={sitePath('favicon.svg')} />
   </head>
